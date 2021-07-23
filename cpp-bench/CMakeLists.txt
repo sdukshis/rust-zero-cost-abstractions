@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 
 project(cpp-bench CXX)
 
-include(${PROJECT_SOURCE_DIR}/conan.cmake)
+include(${PROJECT_SOURCE_DIR}/cmake/conan.cmake)
 conan_cmake_run(
   CONANFILE conanfile.txt
   BASIC_SETUP
