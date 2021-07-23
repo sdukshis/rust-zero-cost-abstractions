@@ -8,6 +8,8 @@
 
 #include <range/v3/all.hpp>
 
+#include "zip.hpp"
+
 class TestSet
 {
 private:
@@ -64,7 +66,8 @@ public:
 
         assert(a.size() == b.size());
         std::int64_t res = 0;
-        for (const auto [a, b] : ranges::views::zip(a, b)) {
+ 
+        for (const auto& [a, b] : zip(a, b)) {
             if (a > 2) {
                 res += a * b;
             }

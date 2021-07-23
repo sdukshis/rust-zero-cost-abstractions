@@ -31,6 +31,7 @@ static void calculate_direct_index(benchmark::State& state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
         benchmark::DoNotOptimize(test_set.calculate_direct_index(a, b));
+        benchmark::ClobberMemory();
     }
 }
 
@@ -45,6 +46,7 @@ static void calculate_for_range(benchmark::State& state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
         benchmark::DoNotOptimize(test_set.calculate_for_range(a, b));
+        benchmark::ClobberMemory();
     }
 }
 
@@ -59,6 +61,7 @@ static void calculate_ranges(benchmark::State& state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
         benchmark::DoNotOptimize(test_set.calculate_ranges(a, b));
+        benchmark::ClobberMemory();
     }
 }
 
@@ -73,6 +76,7 @@ static void calculate_tranform_reduce(benchmark::State& state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
         benchmark::DoNotOptimize(test_set.calculate_tranform_reduce(a, b));
+        benchmark::ClobberMemory();
     }
 }
 
