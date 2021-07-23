@@ -18,7 +18,8 @@ conan_target_link_libraries(${PROJECT_NAME})
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
     CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(${PROJECT_NAME} PRIVATE
-        -march=native 
+        -march=native
+        -mavx2 
         -Wall
         -Wextra
         -Werror
@@ -41,6 +42,13 @@ add_custom_target(
 add_executable(test-calculate tests/test_calculate.cpp)
 conan_target_link_libraries(test-calculate)
 target_include_directories(test-calculate PRIVATE src)
+target_compile_options(test-calculate PRIVATE
+    -march=native
+    -Wall
+    -Wextra
+    -Werror
+    -pedantic
+)
 target_compile_features(test-calculate PUBLIC cxx_std_20)
 
 add_custom_target(

@@ -25,6 +25,10 @@ TEST(TestSet, calculate_tranform_reduce) {
     ASSERT_EQ(expected_result, calculate_tranform_reduce(a, b));
 }
 
+TEST(TestSet, calculate_avx) {
+    ASSERT_EQ(expected_result, calculate_avx(a, b));
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

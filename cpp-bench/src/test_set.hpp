@@ -7,6 +7,7 @@
 #include <numeric>
 
 #include <range/v3/all.hpp>
+#include <x86intrin.h>
 
 #include "zip.hpp"
 
@@ -110,12 +111,43 @@ std::int64_t calculate_ranges(const std::vector<std::int32_t> &a,
     return res;
 }
 
-std::int64_t calculate_avx(const std::vector<std::int32_t> &,
-                            const std::vector<std::int32_t> &)
+std::int64_t calculate_avx(const std::vector<std::int32_t> &a,
+                          const std::vector<std::int32_t> &b)
 {
     assert(a.size() == b.size());
+    const size_t size = 8; // initial size of chunks
+    const size_t vec_length = a.size();
 
-    std::int64_t res = 0;
+    auto value2 = _mm256_set1_epi32(2); // broadcast 2
+    auto acc1 = _mm256_setzero_si256();
+    auto acc2 = _mm256_setzero_si256();
+    size_t i = 0;
+    for (; i + size < vec_length; i += size) {
+        auto va = _mm256_loadu_si256(reinterpret_cast<const __m256i_u*>(&a[i]));
+        auto vb = _mm256_loadu_si256(reinterpret_cast<const __m256i_u*>(&b[i]));
 
-    return res;
+        auto mask = _mm256_cmpgt_epi32(va, value2);
+        va = _mm256_and_si256(va, mask);
+
+        auto m1 = _mm256_mul_epi32(va, vb);
+        acc1 = _mm256_add_epi64(acc1, m1);
+
+        auto shuf_va = _mm256_shuffle_epi32(va, 0b10110001);
+        auto shuf_vb = _mm256_shuffle_epi32(vb, 0b10110001);
+        auto m2 = _mm256_mul_epi32(shuf_va, shuf_vb);
+        acc2 = _mm256_add_epi64(acc2, m2);
+    }
+
+    std::int64_t remainder = 0;
+    for (; i < vec_length; ++i) {
+        if (a[i] > 2) {
+            remainder += a[i] * b[i];
+        }
+    }
+
+    auto acc = _mm256_add_epi64(acc1, acc2);
+    std::int64_t d[size / 2];
+    _mm256_storeu_si256(reinterpret_cast<__m256i_u *>(d), acc);
+
+    return std::accumulate(std::begin(d), std::end(d), remainder);
 }
