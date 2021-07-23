@@ -4,3 +4,4 @@ obj/
 BenchmarkDotNet.Artifacts/
 /java-bench/target
 .vs/
+/cpp-bench/build
