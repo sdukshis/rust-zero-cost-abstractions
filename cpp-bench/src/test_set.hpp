@@ -43,63 +43,6 @@ public:
         return {vectors[uniform(rng)], vectors[uniform(rng)]};
     }
 
-    std::int64_t calculate_direct_index(const std::vector<std::int32_t> &a,
-                                        const std::vector<std::int32_t> &b)
-    {
-
-        assert(a.size() == b.size());
-        const size_t len = a.size();
-        std::int64_t res = 0;
-        for (size_t i = 0; i < len; ++i)
-        {
-            if (a[i] > 2)
-            {
-                res += a[i] * b[i];
-            }
-        }
-        return res;
-    }
-
-    std::int64_t calculate_for_range(const std::vector<std::int32_t> &a,
-                                     const std::vector<std::int32_t> &b)
-    {
-
-        assert(a.size() == b.size());
-        std::int64_t res = 0;
- 
-        for (const auto& [a, b] : zip(a, b)) {
-            if (a > 2) {
-                res += a * b;
-            }
-        }
-
-        return res;
-    }
-
-    std::int64_t calculate_tranform_reduce(const std::vector<std::int32_t> &a,
-                                           const std::vector<std::int32_t> &b)
-    {
-
-        assert(a.size() == b.size());
-        std::int64_t res = std::transform_reduce(a.begin(), a.end(), b.begin(), 0, std::plus<>(), [](std::int32_t a, std::int32_t b)
-                                                 { return (a > 2) ? a * b : 0; });
-
-        return res;
-    }
-
-    std::int64_t calculate_ranges(const std::vector<std::int32_t> &a,
-                                 const std::vector<std::int32_t> &b)
-    {
-        using namespace ranges;
-        assert(a.size() == b.size());
-        std::int64_t res = ranges::accumulate(views::zip(a, b)
-            | ranges::views::filter([](auto &&values) { const auto& [a, b] = values; return a > 2; })
-            | ranges::views::transform([](auto &&values) { const auto& [a, b] = values; return a * b; })
-            , 0);
-
-        return res;
-    }
-
     size_t num_vecs() const
     {
         return vectors.size();
@@ -110,3 +53,69 @@ public:
         return vectors.at(0).size();
     }
 };
+
+std::int64_t calculate_direct_index(const std::vector<std::int32_t> &a,
+                                    const std::vector<std::int32_t> &b)
+{
+
+    assert(a.size() == b.size());
+    const size_t len = a.size();
+    std::int64_t res = 0;
+    for (size_t i = 0; i < len; ++i)
+    {
+        if (a[i] > 2)
+        {
+            res += a[i] * b[i];
+        }
+    }
+    return res;
+}
+
+std::int64_t calculate_direct(const std::vector<std::int32_t> &a,
+                                    const std::vector<std::int32_t> &b)
+{
+
+    assert(a.size() == b.size());
+    std::int64_t res = 0;
+
+    for (const auto& [a, b] : zip(a, b)) {
+        if (a > 2) {
+            res += a * b;
+        }
+    }
+
+    return res;
+}
+
+std::int64_t calculate_tranform_reduce(const std::vector<std::int32_t> &a,
+                                        const std::vector<std::int32_t> &b)
+{
+
+    assert(a.size() == b.size());
+    std::int64_t res = std::transform_reduce(a.begin(), a.end(), b.begin(), 0, std::plus<>(), [](std::int32_t a, std::int32_t b)
+                                                { return (a > 2) ? a * b : 0; });
+
+    return res;
+}
+
+std::int64_t calculate_ranges(const std::vector<std::int32_t> &a,
+                                const std::vector<std::int32_t> &b)
+{
+    assert(a.size() == b.size());
+    std::int64_t res = ranges::accumulate(ranges::views::zip(a, b)
+        | ranges::views::filter([](auto &&values) { const auto& [a, b] = values; return a > 2; })
+        | ranges::views::transform([](auto &&values) { const auto& [a, b] = values; return a * b; })
+        , 0);
+
+    return res;
+}
+
+std::int64_t calculate_avx(const std::vector<std::int32_t> &,
+                            const std::vector<std::int32_t> &)
+{
+    assert(a.size() == b.size());
+
+    std::int64_t res = 0;
+
+    return res;
+}

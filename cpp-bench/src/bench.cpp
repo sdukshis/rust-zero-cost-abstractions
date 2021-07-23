@@ -30,14 +30,13 @@ static void calculate_direct_index(benchmark::State& state) {
     for (auto _ : state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
-        benchmark::DoNotOptimize(test_set.calculate_direct_index(a, b));
-        benchmark::ClobberMemory();
+        benchmark::DoNotOptimize(calculate_direct_index(a, b));
     }
 }
 
 BENCHMARK(calculate_direct_index);
 
-static void calculate_for_range(benchmark::State& state) {
+static void calculate_direct(benchmark::State& state) {
     std::random_device rd;
     std::default_random_engine rng(rd());
     TestSet test_set(vec_length, num_vecs, rng);
@@ -45,12 +44,11 @@ static void calculate_for_range(benchmark::State& state) {
     for (auto _ : state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
-        benchmark::DoNotOptimize(test_set.calculate_for_range(a, b));
-        benchmark::ClobberMemory();
+        benchmark::DoNotOptimize(calculate_direct(a, b));
     }
 }
 
-BENCHMARK(calculate_for_range);
+BENCHMARK(calculate_direct);
 
 static void calculate_ranges(benchmark::State& state) {
     std::random_device rd;
@@ -60,8 +58,7 @@ static void calculate_ranges(benchmark::State& state) {
     for (auto _ : state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
-        benchmark::DoNotOptimize(test_set.calculate_ranges(a, b));
-        benchmark::ClobberMemory();
+        benchmark::DoNotOptimize(calculate_ranges(a, b));
     }
 }
 
@@ -75,8 +72,7 @@ static void calculate_tranform_reduce(benchmark::State& state) {
     for (auto _ : state) {
         // This code gets timed
         const auto& [a, b] = test_set.sample_pair(rng);
-        benchmark::DoNotOptimize(test_set.calculate_tranform_reduce(a, b));
-        benchmark::ClobberMemory();
+        benchmark::DoNotOptimize(calculate_tranform_reduce(a, b));
     }
 }
 

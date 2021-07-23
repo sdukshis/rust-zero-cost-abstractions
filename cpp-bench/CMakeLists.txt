@@ -17,9 +17,8 @@ conan_target_link_libraries(${PROJECT_NAME})
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
     CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_options(${PROJECT_NAME} PRIVATE 
-        -O3
-        -march=native
+    target_compile_options(${PROJECT_NAME} PRIVATE
+        -march=native 
         -Wall
         -Wextra
         -Werror
@@ -28,7 +27,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE
         /EHsc
-        /O2
         /W4
         /WX
     )
@@ -38,4 +36,14 @@ target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 add_custom_target(
     bench $<TARGET_FILE:${PROJECT_NAME}> --benchmark_repetitions=10 --benchmark_display_aggregates_only=true
     DEPENDS ${PROJECT_NAME}
+)
+
+add_executable(test-calculate tests/test_calculate.cpp)
+conan_target_link_libraries(test-calculate)
+target_include_directories(test-calculate PRIVATE src)
+target_compile_features(test-calculate PUBLIC cxx_std_20)
+
+add_custom_target(
+    tests $<TARGET_FILE:test-calculate>
+    DEPENDS test-calculate
 )

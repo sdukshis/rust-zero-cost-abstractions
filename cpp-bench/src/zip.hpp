@@ -43,7 +43,7 @@ public:
 
     friend bool operator!=(const zip_iterator &lhs, const zip_iterator &rhs)
     {
-        return std::get<0>(lhs.iters) != std::get<0>(rhs.iters);
+        return !(lhs == rhs);
     }
 };
 
@@ -51,23 +51,26 @@ template <typename Container1, typename Container2>
 class zip_container
 {
 private:
-    Container1 &c1;
-    Container2 &c2;
+    Container1 *fst;
+    Container2 *snd;
 
 public:
-    zip_container(Container1 &c1_, Container2 &c2_)
-        : c1{c1_}, c2{c2_}
+    zip_container(Container1 &fst_, Container2 &snd_)
+        : fst{&fst_}, snd{&snd_}
     {
+        if (std::size(*fst) > std::size(*snd)) {
+            std::swap(fst, snd);
+        }
     }
 
     auto begin() const
     {
-        return zip_iterator{std::begin(c1), std::begin(c2)};
+        return zip_iterator{std::begin(*fst), std::begin(*snd)};
     }
 
     auto end() const
     {
-        return zip_iterator{std::end(c1), std::end(c2)};
+        return zip_iterator{std::end(*fst), std::end(*snd)};
     }
 };
 
