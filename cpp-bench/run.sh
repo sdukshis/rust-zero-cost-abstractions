@@ -1,5 +1,5 @@
 #!/bin/bash
 
-mkdir build && pushd build
+mkdir -p build && pushd build
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --target bench
