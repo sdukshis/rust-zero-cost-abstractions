@@ -9,6 +9,7 @@ conan_cmake_run(
   CMAKE_TARGETS # individual targets to link to
   BUILD
     missing
+ 
 )
 
 add_executable(${PROJECT_NAME} src/bench.cpp)
@@ -35,6 +36,6 @@ endif()
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
 add_custom_target(
-    bench $<TARGET_FILE:${PROJECT_NAME}>
+    bench $<TARGET_FILE:${PROJECT_NAME}> --benchmark_repetitions=10 --benchmark_display_aggregates_only=true
     DEPENDS ${PROJECT_NAME}
 )
